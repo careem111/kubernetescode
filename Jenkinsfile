@@ -9,7 +9,9 @@ pipeline{
         }      
     stage('Build image'){
         steps{
+            script{
             app = docker.build 'careem785/argo-cd-test'
+            }
           }
       }
     stage('Push image') {
