@@ -1,34 +1,39 @@
-node {
-    def app
-
-    stage('Clone repository') {
-      
-
-        checkout scm
-    }
-
-    stage('Build image') {
-  
-       app = docker.build("raj80dockerid/test")
-    }
-
+pipeline{
+    agent {
+        none
+   }
+    stages {
+      stage('Checkout SCM') {
+    	  steps{
+                checkout scm
+	        }
+        }      
+    stage('Build image'){
+        steps{
+            app = docker.build("careem785/argo-cd-test")
+          }
+      }
     stage('Test image') {
-  
-
-        app.inside {
-            sh 'echo "Tests passed"'
+        steps{
+                app.inside {
+                    sh 'echo "Tests passed"'
         }
-    }
-
+                  }
+             }
     stage('Push image') {
-        
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+        steps{
+        docker.withRegistry('https://registry.hub.docker.com', 'docker') {
             app.push("${env.BUILD_NUMBER}")
         }
+        }
     }
-    
     stage('Trigger ManifestUpdate') {
-                echo "triggering updatemanifestjob"
+        steps{
+                echo "triggering update manifestjob"
                 build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
         }
-}
+
+          }
+        }
+ }
+
