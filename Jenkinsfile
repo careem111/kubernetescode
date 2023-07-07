@@ -1,7 +1,6 @@
 pipeline{
-    agent {
-        none
-   }
+    agent any
+   
     stages {
       stage('Checkout SCM') {
     	  steps{
@@ -10,7 +9,7 @@ pipeline{
         }      
     stage('Build image'){
         steps{
-            app = docker.build("careem785/argo-cd-test")
+            app = docker.build 'careem785/argo-cd-test'
           }
       }
     stage('Test image') {
@@ -23,7 +22,7 @@ pipeline{
     stage('Push image') {
         steps{
         docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-            app.push("${env.BUILD_NUMBER}")
+            app.push('${env.BUILD_NUMBER}')
         }
         }
     }
