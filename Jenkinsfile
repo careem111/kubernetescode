@@ -10,7 +10,7 @@ pipeline{
     stage('Build image'){
         steps{
             script{
-            app = docker.build 'careem785/argo-cd-test'
+            app = docker.build 'careem785/argocdtest'
             }
           }
       }
@@ -18,7 +18,7 @@ pipeline{
         steps{
             script {
             docker.withRegistry('https://registry.hub.docker.com', 'docker') {
-            app.push('${env.BUILD_NUMBER}')
+            app.push("${env.BUILD_NUMBER}")
             }
         }
         }
